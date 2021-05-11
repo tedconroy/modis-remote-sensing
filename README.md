@@ -1,5 +1,5 @@
 # remote-sensing
-##Code for MODIS processing from Level 1A files to mapped, atmospherically corrected Level 3 files.
+MODIS directory: Code for MODIS processing from Level 1A files to mapped, atmospherically corrected Level 3 files.
 I found the standard Level-2 files from the NASA ocean color site to have significant amounts of missing or poor data due to the highly turbid waters in my study area, proximity to the coast, and other issues with the standard Seadas processing in coastal waters. Here is the workflow that I took with my processing:
 
 1. Download L1A data from ocean-color website (https://oceancolor.gsfc.nasa.gov/cgi/browse.pl?sen=amod).
