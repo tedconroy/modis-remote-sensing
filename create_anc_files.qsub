@@ -17,7 +17,6 @@ export OCSSWROOT=/projectnb/fichotrs/Ted/ocssw
 source $OCSSWROOT/OCSSW_bash.env
 
 # go to the directory where anc files will be written
-# (even though they are written in 2 places...?)
 cd /projectnb/fichotrs/Ted/anc_files
 
 # Loop through each file
