@@ -1,6 +1,5 @@
 # parameter file for modis files L1A --> mapped L3 files
 # this script gets called in a loop for each L1A file and ifile gets specified there
-# this script is set up for NIR bands black pixel aerosol processing opt=-2
 # uses mostly default values except bands for cloud masking and turning off straylight and other flags
 #
 # notes:
