@@ -42,7 +42,7 @@ do
     
     # check if file has been processed already 
     # (workaround for issue where all files dont complete, so can run this script multiple times)
-    if [test ! -f "$output_dir$base_name* "]; then
+    if [ test ! -f "$output_dir$base_name* " ]; then
 
         # Set your multilevel_processor settings file
         cp /projectnb/fichotrs/Ted/code/nir_settings.par .
