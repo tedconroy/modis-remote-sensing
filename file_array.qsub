@@ -1,0 +1,71 @@
+#!/bin/bash -l
+# Running SeaDAS multilevel_processor.py, as job array.
+# compute anc files in seperate script, called before running this
+
+# job set up
+#$ -t 1-60 # number of array jobs (total/divisor) $(($TOTAL/$DIVISOR))
+#$ -N Seadas_NIR  # Job name
+#$ -j y
+module load python2/2.7.16
+module load gcc/5.5.0
+module load seadas/7.5.3
+
+# Set the directories and file info
+TOTAL_FILES_TO_PROCESS=17220
+DIVISOR=287
+output_dir=(/projectnb/fichotrs/Ted/modis_L3_output/nir_fudge_4/) # use / at the end
+FILES=(/projectnb/fichotrs/Ted/modis_L1A_files/*L1A_LAC.x.hdf)
+
+# end user defs
+NFILES=${#FILES[@]}
+FILE_IDX=$(($SGE_TASK_ID-1)) # bash index [0-n]
+START=$(($FILE_IDX*$DIVISOR))
+END=$(($START+$DIVISOR-1))
+
+# print info to log
+echo $NFILES found. This is job: $SGE_TASK_ID out of: $SGE_TASK_LAST jobs.
+echo idx number: $FILE_IDX
+echo task id: $SGE_TASK_ID
+echo temporary working directory: $TMPDIR
+
+# go to scratch directory $TMPDIR
+cd $TMPDIR
+
+# Begin loop through files
+for index in $(seq $START $END)
+do
+    F=${FILES[$index]}
+    cp $F .
+    file=(./*.L1A_LAC.x.hdf)
+    file_base="$(basename -- $file)"
+    base_name=$(echo "$file_base" | cut -f 1 -d '.')
+    
+    # check if file has been processed already 
+    # (workaround for issue where all files dont complete, so can run this script multiple times)
+    if [test ! -f "$output_dir$base_name* "]; then
+
+        # Set your multilevel_processor settings file
+        cp /projectnb/fichotrs/Ted/code/nir_settings.par .
+        SETTINGS=$TMPDIR/nir_settings.par
+
+        # Print out information to log file
+        echo Processing file:   $F
+        echo Using settings file: $SETTINGS
+
+        # add path to OCSSW (multilevel_processor.py)
+        # use you local path to the OCSSW that you installed
+        export OCSSWROOT=/projectnb/fichotrs/Ted/ocssw
+        source $OCSSWROOT/OCSSW_bash.env
+
+        # Run multilevel processor
+        time multilevel_processor.py -v --ifile=$file $SETTINGS par="$file.anc" --odir="$TMPDIR"
+
+        # move level 3 file to output_dir
+        mv ./*L3m_DAY_qkm.x.hdf.nc "$output_dir"
+    
+        # wipe the directory
+        rm -f *
+    fi
+done
+
+

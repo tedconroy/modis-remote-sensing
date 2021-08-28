@@ -1,0 +1,29 @@
+#!/bin/bash -l
+
+# create MODIS ancillary files from L1A file using getanc.py
+# required to do this step on single core before running a job array with multilevel_processor.py
+# other option would be to mess with mysql, info here: (https://oceancolor.gsfc.nasa.gov/forum/oceancolor/topic_show.pl?tid=5751)
+
+# qsub specifications
+#$ -N Seadas_anc
+#$ -j y
+#$ -l h_rt=200:00:00   # Specify the hard time limit for the job
+#$ -P fichotrs
+
+module load python2/2.7.16
+module load gcc/5.5.0
+module load seadas/7.5.3
+export OCSSWROOT=/projectnb/fichotrs/Ted/ocssw
+source $OCSSWROOT/OCSSW_bash.env
+
+# go to the directory where anc files will be written
+# (even though they are written in 2 places...?)
+cd /projectnb/fichotrs/Ted/anc_files
+
+# Loop through each file
+for F in /projectnb/fichotrs/Ted/modis_L1A_files/*L1A_LAC.x.hdf
+do
+getanc.py -v $F 
+modis_atteph.py -v $F 
+done
+

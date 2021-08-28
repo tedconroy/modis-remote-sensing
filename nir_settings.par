@@ -1,0 +1,64 @@
+# parameter file for modis files L1A --> mapped L3 files
+# this script gets called in a loop for each L1A file and ifile gets specified there
+# this script is set up for NIR bands black pixel aerosol processing opt=-2
+# uses mostly default values except bands for cloud masking and turning off straylight and other flags
+#
+# notes:
+# make sure add login info to ~/.netrc https://oceancolor.gsfc.nasa.gov/data/download_methods/
+# each step of the way needs the files in the present directory from the last step, so odir needs to = working directory
+
+[main]
+# define ifile in shell script, and odir
+keepfiles=1
+overwrite=1
+
+[geo]
+keepfiles=1
+--disable-download 
+--ancdir=/projectnb/fichotrs/Ted/ocssw/var/anc
+--ancdb=/projectnb/fichotrs/Ted/ocssw/var/ancillary_data.db
+
+[l1aextract_modis]
+keepfiles=1
+--disable-download 
+--ancdir=/projectnb/fichotrs/Ted/ocssw/var/anc
+--ancdb=/projectnb/fichotrs/Ted/ocssw/var/ancillary_data.db
+
+[level 1b]
+#keepfiles=1
+#--disable-download
+#--ancdir=/projectnb/fichotrs/Ted/ocssw/var/anc
+#--ancdb=/projectnb/fichotrs/Ted/ocssw/var/ancillary_data.db
+
+[l2gen]
+l2prod=Rrs_555,Rrs_469,Rrs_645,par,Rrs_412,Rrs_443,Rrs_488,Rrs_531,Rrs_547,Rrs_667,Rrs_678,chlor_a,sst,a_443_giop,bbp_555_giop,bbp_469_giop,bbp_645_giop,bbp_412_giop,bbp_443_giop,bbp_488_giop,bbp_531_giop,bbp_547_giop,bbp_667_giop,bbp_678_giop
+proc_sst=1
+maskstlight = off 
+maskbath = off 
+maskhilt = off 
+aer_opt=-1
+cloud_thresh=0.018
+cloud_wave=2130.0
+aer_wave_long=859
+aer_wave_short=748
+resolution=250
+keepfiles=1
+
+[l2bin]
+l3bprod=Rrs_555,Rrs_469,Rrs_645,par,Rrs_412,Rrs_443,Rrs_488,Rrs_531,Rrs_547,Rrs_667,Rrs_678,chlor_a,chlor_a,sst,a_443_giop,bbp_555_giop,bbp_469_giop,bbp_645_giop,bbp_412_giop,bbp_443_giop,bbp_488_giop,bbp_531_giop,bbp_547_giop,bbp_667_giop,bbp_678_giop
+prodtype=regional
+resolution=Q
+flaguse=LAND,CLDICE
+keepfiles=1
+
+[l3mapgen]
+product=Rrs_555,Rrs_469,Rrs_645,par,Rrs_412,Rrs_443,Rrs_488,Rrs_531,Rrs_547,Rrs_667,Rrs_678,chlor_a,chlor_a,sst,a_443_giop,bbp_555_giop,bbp_469_giop,bbp_645_giop,bbp_412_giop,bbp_443_giop,bbp_488_giop,bbp_531_giop,bbp_547_giop,bbp_667_giop,bbp_678_giop
+resolution=qkm
+interp=area
+north=-38.6
+south=-40.2
+east=178.6
+west=176.6
+keepfiles=1
+oformat=NETCDF4
+fudge=4.0
